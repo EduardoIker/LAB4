@@ -1,0 +1,175 @@
+<!doctype html public>
+<html>
+<head>
+<link rel="stylesheet" href="estilos/stylegreen.css" type="text/css" media="all">	
+<title> Formulario de registro </title>
+
+	<script language="javascript">
+		//Variable global
+		var seleccionado=false;
+	
+		function vervalores(){
+		var sAux="";
+		var frm = document.getElementById("registro");
+		for (i=0;i<frm.elements.length;i++)
+			{ sAux += "NOMBRE: " + frm.elements[i].name + " ";
+			  sAux += "VALOR: " + frm.elements[i].value + "\n" ;
+			}
+		alert(sAux);
+		}
+	
+		function verificar(){
+	
+	
+		var nombreyape=document.getElementById("nombreyapellidos");
+		var correo=document.getElementById("correo");
+		var password=document.getElementById("password");
+		var numtelef=document.getElementById("numtelefono");
+		var especialidad=document.getElementById("especialidad");
+		if(seleccionado){
+			var espec=document.getElementById("espec");
+			var formulario=document.getElementById("registro");
+		}
+		
+		//Nombre y apellidos
+		if(nombreyape.value==""){
+			alert("Completa el campo 'Nombre y Apellidos'");
+			return false;
+		}
+
+		if(!(/^[A-z]+([ ][A-z]+)+$/.test(nombreyape.value))){
+			alert("Introduce al menos un apellido");
+			return false;
+		}
+		
+		//Correo
+		if(correo.value==""){
+			alert("Completa el campo 'Correo'");
+			return false;
+		}
+		if(!(/^[a-z]+([0-9]{3})@ikasle\.ehu\.(es|eus)$/.test(correo.value))){
+			alert("Introduce un correo con el formato de la UPV/EHU");
+			return false;
+		}
+		
+		//Contraseña (entre 6-8 caracteres y debe contener al menos: letra mayúscula, letra minúscula y dígito)
+		if(password.value==""){
+			alert("Completa el campo 'Password'");
+			return false;
+		}
+		if(!(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,8}$/.test(password.value))){
+			alert("Introduce una contrasena valida. Debe contener:\n - Una letra mayuscula\n - Una letra minuscula\n - Un digito\n - Longitud entre 6 y 8 caracteres (ambos inclusive)");
+			return false;
+		}
+		
+		//Número de teléfono
+		if(numtelef.value==""){
+			alert("Completa el campo 'Telefono'");
+			return false;
+		}
+		if(!(/^[9|8|7|6]\d{8,8}$/.test(numtelef.value))){
+			alert("Introduce un numero de telefono valido");
+			return false;
+		}
+		
+		//Caso de OTRA ESPECIALIDAD
+		if(seleccionado){
+			if(espec.value==""){
+				alert("Introduce la otra especialidad");
+				return false;
+			}
+			formulario.appendChild(espec);
+		}
+		vervalores();
+		return true;
+		
+	}
+		
+		function ocultar() {
+			if(seleccionado){
+				document.getElementById("area").style.display='none';
+				seleccionado=false;
+			}
+		}
+		
+		function crearTextArea(){
+			var frm=document.getElementById("area");
+			var aux=document.createElement("input");
+			aux.setAttribute("id","espec");
+			aux.setAttribute("name","otraEspec");
+			frm.innerHTML="Indica la otra especialidad(*):  ";	
+			frm.appendChild(aux);
+			seleccionado=true;
+			document.getElementById("area").style.display='block';
+		}
+
+		function showimagepreview(input) {  
+  
+            if (input.files && input.files[0]) {  
+                var reader = new FileReader();  
+                reader.onload = function (e) {  
+  
+                    document.getElementsByTagName("img")[0].setAttribute("src", e.target.result);  
+                }  
+                reader.readAsDataURL(input.files[0]);  
+            }  
+        }  
+  
+		
+
+	</script>
+	
+</head>
+<body>
+    <center> 
+  <h1><b>
+         Registro
+         </b>
+      </h1>
+      <br>
+    <center> 
+	<form id='registro' name='registro' action="RegistrarConFoto.php" onSubmit='return verificar()' method="post"  enctype="multipart/form-data">
+		<label for="nombreyapellidos">Nombre y apellidos (*): </label>
+		<input name="nombreyapellidos" type="text" id="nombreyapellidos"> <br> <br>
+		
+		<label for="correo">Direcci&oacute;n de correo (*): </label>
+		<input name="correo" type="text" id="correo"> <br> <br>
+		
+		<label for="password">Password (*): </label>
+		<input name="password" type="password" id="password"> <br> <br>
+		
+		<label for="numtelefono">N&uacute;mero de tel&eacute;fono (*): </label>
+		<input name="numtelefono" type="text" id="numtelefono"> <br> <br>
+		
+		<label for="Especialidad">Especialidad(*): </label>
+		<select name="Especialidad" id="especialidad">
+			<option onClick="ocultar()" value="Ingenieria de Computadores">Ingenier&iacute;a de Computadores</option>
+			<option onClick="ocultar()" value="Computacion">Computaci&oacute;n</option>
+			<option onClick="ocultar()" value="Ingenieria del software">Ingenier&iacute;a del software</option>
+			<option onClick="crearTextArea()" >Otra...</option>
+		</select> <br> <br>
+		
+		<div name="area" id="area">
+		</div>
+		<br>
+		
+		<label for="intereses">Tecnolog&iacute;as y herramientas en las que est&aacute; interesado: </label>
+		<br>
+		<textarea name="intereses" rows="10" cols="40" id="intereses" onClick='intereses.value=""'>Escribe aqu&iacute; tus intereses...
+		</textarea> <br> <br>
+		
+		
+		Seleccione una imagen <br>
+		<input type="file" name="img" id="img" onChange="showimagepreview(this)"><br><br>
+		Vista previa:<br><br>
+		<img src="avatar.jpg" name="imagen" width="250" height="250">
+
+		<br> <br>
+		<input name="submit" type="submit" value="Enviar datos" id="submit">
+		<input name="reset" type="reset" value="Borrar todo" id="reset">
+		
+		
+	</form>
+    </center> 
+</body>
+</html>
